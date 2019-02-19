@@ -58,7 +58,43 @@ router.get("/:id", async (req, res) => {
 });
 
 // DELETE to /api/posts/:id	- Removes the post with the specified id and returns the deleted post object. You may need to make additional calls to the database in order to satisfy this requirement.
-
+router.delete("/:id", async (req, res) => {
+  try {
+    count = await db.remove(req.params.id);
+    if (count) {
+      res.status(200).json({ message: "The hub has been nuked" });
+    } else {
+      res
+        .status(404)
+        .json({ message: "The post with the specified ID does not exist." });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "The post could not be removed" });
+  }
+});
 // PUT to /api/posts/:id - Updates the post with the specified id using data from the request body. Returns the modified document, NOT the original.
+router.put("/:id", async (req, res) => {
+  try {
+    updated = await db.update(req.params.id, req.body);
+
+    if (!req.params.id) {
+      res
+        .status(404)
+        .json({ message: "The post with the specified ID does not exist." });
+    } else if (req.body.title && req.body.contents) {
+      res.status(200).json(updated);
+    } else {
+      res
+        .status(400)
+        .json({
+          errorMessage: "Please provide title and contents for the post."
+        });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "The post information could not be modified." });
+  }
+});
 
 module.exports = router;
