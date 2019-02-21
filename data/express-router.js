@@ -84,11 +84,9 @@ router.put("/:id", async (req, res) => {
     } else if (req.body.title && req.body.contents) {
       res.status(200).json(updated);
     } else {
-      res
-        .status(400)
-        .json({
-          errorMessage: "Please provide title and contents for the post."
-        });
+      res.status(400).json({
+        errorMessage: "Please provide title and contents for the post."
+      });
     }
   } catch (error) {
     res
